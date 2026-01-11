@@ -1,1 +1,8 @@
-services: {}
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: cupom-api
+    ports:
+      - "8080:8080"
