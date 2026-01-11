@@ -4,6 +4,7 @@ import com.coupon.cupom.entity.Cupom;
 import com.coupon.cupom.request.CreateCupomRequest;
 import com.coupon.cupom.request.CupomResponse;
 import com.coupon.cupom.service.CupomService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,7 +29,7 @@ public class CupomController {
     }
 
     @PostMapping
-    public ResponseEntity<CupomResponse> salvarCupom(@RequestBody CreateCupomRequest request) {
+    public ResponseEntity<CupomResponse> salvarCupom(@Valid @RequestBody CreateCupomRequest request) {
         Cupom cupom = service.salvarCupom(request);
         CupomResponse response = toResponse(cupom);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
