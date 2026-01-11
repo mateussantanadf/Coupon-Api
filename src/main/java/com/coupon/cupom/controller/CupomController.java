@@ -34,6 +34,13 @@ public class CupomController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<CupomResponse> deleteCupom(@PathVariable UUID id) {
+        Cupom cupom = service.deleteCupom(id);
+        CupomResponse response = toResponse(cupom);
+        return ResponseEntity.ok(response);
+    }
+
     private CupomResponse toResponse(Cupom cupom) {
         CupomResponse response = new CupomResponse();
         response.setId(cupom.getId());

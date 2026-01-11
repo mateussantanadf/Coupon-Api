@@ -37,6 +37,13 @@ public class CupomService {
         return repository.save(cupom);
     }
 
+    public Cupom deleteCupom(UUID id) {
+        Cupom cupom = buscarPorId(id);
+        cupom.setStatus(CupomStatus.DELETED);
+
+        return repository.save(cupom);
+    }
+
     private String filtrarCode(String code) {
         return code.replace("-", "").toUpperCase();
     }
