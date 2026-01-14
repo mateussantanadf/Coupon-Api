@@ -37,6 +37,19 @@ public class CupomService {
         return repository.save(cupom);
     }
 
+    public Cupom atualizarCupom(UUID id, CreateCupomRequest request) {
+        Cupom cupom = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cupom não encontrado"));
+
+        cupom.setCode(cupom.getCode());
+        cupom.setDescription(request.getDescription());
+        cupom.setDiscountValue(request.getDiscountValue());
+        cupom.setExpirationDate(request.getExpirationDate());
+        cupom.setPublished(request.isPublished());
+
+        return repository.save(cupom);
+    }
+
     public Cupom deleteCupom(UUID id) {
         Cupom cupom = buscarPorId(id);
         cupom.deletar();

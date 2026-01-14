@@ -39,7 +39,7 @@ public class CupomController {
 
     @Operation(
             summary = "Criar cupom",
-            description = "Cria um novo cupom com regras de validação"
+            description = "Cria um novo cupom"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Cupom criado com sucesso"),
@@ -67,6 +67,31 @@ public class CupomController {
         Cupom cupom = service.deleteCupom(id);
         CupomResponse response = toResponse(cupom);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Atualizar cupom",
+            description = "Atualiza um novo cupom"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Cupom criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou faltando")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<CupomResponse> atualizarCupom(
+            @PathVariable UUID id,
+            @RequestBody(
+                    required = true,
+                    description = "Dados para atualizar um cupom",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = CreateCupomRequest.class)
+                    )
+            )
+            @Valid CreateCupomRequest request) {
+        Cupom cupom = service.atualizarCupom(id, request);
+        CupomResponse response = toResponse(cupom);
+        return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(response);
     }
 
     private CupomResponse toResponse(Cupom cupom) {
