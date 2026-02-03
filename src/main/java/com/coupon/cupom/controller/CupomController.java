@@ -1,6 +1,7 @@
 package com.coupon.cupom.controller;
 
 import com.coupon.cupom.entity.Cupom;
+import com.coupon.cupom.mapper.CupomMapper;
 import com.coupon.cupom.request.CreateCupomRequest;
 import com.coupon.cupom.request.CupomResponse;
 import com.coupon.cupom.service.CupomService;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class CupomController {
 
     private final CupomService service;
+    private CupomMapper mapper;
 
     public CupomController(CupomService service) {
         this.service = service;
@@ -39,7 +41,7 @@ public class CupomController {
 
     @Operation(
             summary = "Criar cupom",
-            description = "Cria um novo cupom com regras de validação"
+            description = "Cria um novo cupom"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Cupom criado com sucesso"),
@@ -57,28 +59,40 @@ public class CupomController {
             )
             @Valid CreateCupomRequest request) {
         Cupom cupom = service.salvarCupom(request);
-        CupomResponse response = toResponse(cupom);
+        CupomResponse response = mapper.toResponse(cupom);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Operation(summary = "Deletar cupom por ID")
-    @PatchMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<CupomResponse> deleteCupom(@Parameter(description = "ID do cupom") @PathVariable UUID id) {
         Cupom cupom = service.deleteCupom(id);
-        CupomResponse response = toResponse(cupom);
+        CupomResponse response = mapper.toResponse(cupom);
         return ResponseEntity.ok(response);
     }
 
-    private CupomResponse toResponse(Cupom cupom) {
-        CupomResponse response = new CupomResponse();
-        response.setId(cupom.getId());
-        response.setCode(cupom.getCode());
-        response.setDescription(cupom.getDescription());
-        response.setDiscountValue(cupom.getDiscountValue());
-        response.setExpirationDate(cupom.getExpirationDate());
-        response.setStatus(cupom.getStatus());
-        response.setPublished(cupom.isPublished());
-        response.setRedeemed(cupom.isRedeemed());
-        return response;
+    @Operation(
+            summary = "Atualizar cupom",
+            description = "Atualiza um novo cupom"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Cupom criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou faltando")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<CupomResponse> atualizarCupom(
+            @PathVariable UUID id,
+            @RequestBody(
+                    required = true,
+                    description = "Dados para atualizar um cupom",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = CreateCupomRequest.class)
+                    )
+            )
+            @Valid CreateCupomRequest request) {
+        Cupom cupom = service.atualizarCupom(id, request);
+        CupomResponse response = mapper.toResponse(cupom);
+        return ResponseEntity.ok(response);
     }
 }
