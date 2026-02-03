@@ -1,6 +1,7 @@
 package com.coupon.cupom.controller;
 
 import com.coupon.cupom.entity.Cupom;
+import com.coupon.cupom.mapper.CupomMapper;
 import com.coupon.cupom.request.CreateCupomRequest;
 import com.coupon.cupom.request.CupomResponse;
 import com.coupon.cupom.service.CupomService;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class CupomController {
 
     private final CupomService service;
+    private CupomMapper mapper;
 
     public CupomController(CupomService service) {
         this.service = service;
@@ -57,15 +59,15 @@ public class CupomController {
             )
             @Valid CreateCupomRequest request) {
         Cupom cupom = service.salvarCupom(request);
-        CupomResponse response = toResponse(cupom);
+        CupomResponse response = mapper.toResponse(cupom);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Operation(summary = "Deletar cupom por ID")
-    @PatchMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<CupomResponse> deleteCupom(@Parameter(description = "ID do cupom") @PathVariable UUID id) {
         Cupom cupom = service.deleteCupom(id);
-        CupomResponse response = toResponse(cupom);
+        CupomResponse response = mapper.toResponse(cupom);
         return ResponseEntity.ok(response);
     }
 
@@ -90,20 +92,7 @@ public class CupomController {
             )
             @Valid CreateCupomRequest request) {
         Cupom cupom = service.atualizarCupom(id, request);
-        CupomResponse response = toResponse(cupom);
-        return ResponseEntity.status(HttpStatus.UPGRADE_REQUIRED).body(response);
-    }
-
-    private CupomResponse toResponse(Cupom cupom) {
-        CupomResponse response = new CupomResponse();
-        response.setId(cupom.getId());
-        response.setCode(cupom.getCode());
-        response.setDescription(cupom.getDescription());
-        response.setDiscountValue(cupom.getDiscountValue());
-        response.setExpirationDate(cupom.getExpirationDate());
-        response.setStatus(cupom.getStatus());
-        response.setPublished(cupom.isPublished());
-        response.setRedeemed(cupom.isRedeemed());
-        return response;
+        CupomResponse response = mapper.toResponse(cupom);
+        return ResponseEntity.ok(response);
     }
 }

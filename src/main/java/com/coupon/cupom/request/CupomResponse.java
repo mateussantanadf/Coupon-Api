@@ -1,6 +1,6 @@
 package com.coupon.cupom.request;
 
-import com.coupon.cupom.util.CupomStatus;
+import com.coupon.cupom.entity.CupomStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
